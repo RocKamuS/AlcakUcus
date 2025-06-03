@@ -47,7 +47,8 @@ public class PlaneController : MonoBehaviour
         // İLERİ HAREKET
         rb.MovePosition(rb.position + direction * forwardSpeed * Time.fixedDeltaTime);
 
-        // Hesaplanan rotasyonu uygula
-        rb.MoveRotation(newRotation);
+        // Bank acisina bagli olarak burunu yeni yone cevir
+        Quaternion lookRotation = Quaternion.LookRotation(direction, newRotation * Vector3.up);
+        rb.MoveRotation(lookRotation);
     }
 }
