@@ -6,6 +6,8 @@ public class PlaneController : MonoBehaviour
     public float forwardSpeed = 20f;
     public float pitchSpeed = 45f;
     public float rollSpeed = 50f;
+    // Bank turn hızını ayarlamak için çarpan
+    public float bankTurnSpeed = 2f;
 
     private Rigidbody rb;
 
@@ -41,11 +43,21 @@ public class PlaneController : MonoBehaviour
         // YÖN DEĞİŞTİRME – Roll’e göre yönü güncelle (YAW olmadan!)
         Vector3 direction = newRotation * Vector3.forward;
         Vector3 tilt = Vector3.Cross(newRotation * Vector3.up, Vector3.up);
+
+        // Roll açısı yön değişimine etki etsin
+        direction += tilt * bankTurnSpeed * Time.fixedDeltaTime;
+
         direction += tilt * Time.fixedDeltaTime;
+
         direction.Normalize();
 
         // İLERİ HAREKET
         rb.MovePosition(rb.position + direction * forwardSpeed * Time.fixedDeltaTime);
+
+
+        // Bank acisina bagli olarak burunu yeni yone cevir
+        Quaternion lookRotation = Quaternion.LookRotation(direction, newRotation * Vector3.up);
+        rb.MoveRotation(lookRotation);
 
         // Hesaplanan rotasyonu uygula
         rb.MoveRotation(newRotation);
