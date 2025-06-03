@@ -34,18 +34,20 @@ public class PlaneController : MonoBehaviour
             0f,
             -rollInput * rollSpeed * Time.fixedDeltaTime
         );
-        rb.MoveRotation(rb.rotation * deltaRotation);
+
+        // Yeni rotasyonu hesapla, böylece yön güncellenirken güncel açılar kullanılır
+        Quaternion newRotation = rb.rotation * deltaRotation;
 
         // YÖN DEĞİŞTİRME – Roll’e göre yönü güncelle (YAW olmadan!)
-        Vector3 direction = transform.forward;
-        Vector3 tilt = Vector3.Cross(transform.up, Vector3.up);
+        Vector3 direction = newRotation * Vector3.forward;
+        Vector3 tilt = Vector3.Cross(newRotation * Vector3.up, Vector3.up);
         direction += tilt * Time.fixedDeltaTime;
         direction.Normalize();
 
         // İLERİ HAREKET
         rb.MovePosition(rb.position + direction * forwardSpeed * Time.fixedDeltaTime);
 
-        // İSTİKAMETE BAK
-        rb.rotation = Quaternion.LookRotation(direction, transform.up);
+        // Hesaplanan rotasyonu uygula
+        rb.MoveRotation(newRotation);
     }
 }
