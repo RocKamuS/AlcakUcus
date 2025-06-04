@@ -7,7 +7,9 @@ public class PlaneController : MonoBehaviour
     public float pitchSpeed = 45f;
     public float rollSpeed = 50f;
     // Bank turn hızını ayarlamak için çarpan
-    public float bankTurnSpeed = 2f;
+    // Sağa/sola dönüşlerde uçağın daha hızlı yön değiştirebilmesi için
+    // bankeden elde edilen dönüş hızını artırıyoruz.
+    public float bankTurnSpeed = 50f;
 
     private Rigidbody rb;
 
