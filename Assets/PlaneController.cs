@@ -40,15 +40,21 @@ public class PlaneController : MonoBehaviour
         // Yeni rotasyonu hesapla, böylece yön güncellenirken güncel açılar kullanılır
         Quaternion newRotation = rb.rotation * deltaRotation;
 
-        // YÖN DEĞİŞTİRME – Roll’e göre yönü güncelle (YAW olmadan!)
+        // YÖN DEĞİŞTİRME – Sadece bank açısına göre yönü güncelle
         Vector3 direction = newRotation * Vector3.forward;
-        Vector3 tilt = Vector3.Cross(newRotation * Vector3.up, Vector3.up);
 
-        // Roll açısı yön değişimine etki etsin
-        direction += tilt * bankTurnSpeed * Time.fixedDeltaTime;
+        // Uçağın sağ/sol yatıklık miktarı (roll). Sadece roll etkisini ölçer,
+        // pitch sırasında sıfır olur böylece istenmeyen sapmalar engellenir.
+        float bankAmount = Vector3.Dot(newRotation * Vector3.right, Vector3.up);
 
-        direction += tilt * Time.fixedDeltaTime;
-
+        // Bank açısına bağlı olarak uçağı dünya yukarı ekseni etrafında hafifçe
+        // döndürerek yeni yönü oluştur
+        Quaternion yawRotation = Quaternion.Euler(
+            0f,
+            bankAmount * bankTurnSpeed * Time.fixedDeltaTime,
+            0f
+        );
+        direction = yawRotation * direction;
         direction.Normalize();
 
         // İLERİ HAREKET
