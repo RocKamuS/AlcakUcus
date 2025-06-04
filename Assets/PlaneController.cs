@@ -10,6 +10,8 @@ public class PlaneController : MonoBehaviour
     // Sağa/sola dönüşlerde uçağın daha hızlı yön değiştirebilmesi için
     // bankeden elde edilen dönüş hızını artırıyoruz.
     public float bankTurnSpeed = 50f;
+    // Doğrudan yön tuşları ile uygulanacak yaw hızı
+    public float yawSpeed = 45f;
 
     private Rigidbody rb;
 
@@ -26,16 +28,25 @@ public class PlaneController : MonoBehaviour
         // INPUT – Yön tuşları
         float pitchInput = 0f;
         float rollInput = 0f;
+        float yawInput = 0f;
 
         if (Input.GetKey(KeyCode.UpArrow)) pitchInput = 1f;
         if (Input.GetKey(KeyCode.DownArrow)) pitchInput = -1f;
-        if (Input.GetKey(KeyCode.LeftArrow)) rollInput = -1f;
-        if (Input.GetKey(KeyCode.RightArrow)) rollInput = 1f;
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            rollInput = -1f;
+            yawInput = -1f;
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            rollInput = 1f;
+            yawInput = 1f;
+        }
 
         // ROTASYON – Uçağı döndür (pitch ve roll)
         Quaternion deltaRotation = Quaternion.Euler(
             pitchInput * pitchSpeed * Time.fixedDeltaTime,
-            0f,
+            yawInput * yawSpeed * Time.fixedDeltaTime,
             -rollInput * rollSpeed * Time.fixedDeltaTime
         );
 
@@ -53,7 +64,7 @@ public class PlaneController : MonoBehaviour
         // döndürerek yeni yönü oluştur
         Quaternion yawRotation = Quaternion.Euler(
             0f,
-            bankAmount * bankTurnSpeed * Time.fixedDeltaTime,
+            -bankAmount * bankTurnSpeed * Time.fixedDeltaTime,
             0f
         );
         direction = yawRotation * direction;
