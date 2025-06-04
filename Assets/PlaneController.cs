@@ -55,11 +55,8 @@ public class PlaneController : MonoBehaviour
         rb.MovePosition(rb.position + direction * forwardSpeed * Time.fixedDeltaTime);
 
 
-        // Bank acisina bagli olarak burunu yeni yone cevir
+        // Bank açısına bağlı olarak burunu yeni yöne çevir
         Quaternion lookRotation = Quaternion.LookRotation(direction, newRotation * Vector3.up);
         rb.MoveRotation(lookRotation);
-
-        // Hesaplanan rotasyonu uygula
-        rb.MoveRotation(newRotation);
     }
 }
